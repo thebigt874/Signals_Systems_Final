@@ -1,0 +1,69 @@
+%Final project
+%Antonio DeAngelis
+%Parker Hopkins
+%part 4
+
+k = 1:1:1000
+dctlength = 1:1:1000
+for a = 1:200
+    for c = 1:200
+        for c = 1:40
+            for d = 1:5
+                temp_face = findfeatures('.\att_faces\s' c '' d '.pgm', )
+                for a = 1:200
+                    distance = 0;
+                    for dem=1:dctlength 
+                        distance = distance + (trdata_raw(a,dem) - currVector(dem))^2;
+                    end 
+                    L2(a) = distance;
+                    disp(a);
+                    disp(L2(a));
+                end
+                for b = 1:k
+                    ksmallest(b) = b;
+                end
+                for b = 1:k
+                    for a = 1:200
+                        if L2(a) < L2(ksmallest(b))
+                            smallest = true;
+                            for c = 1:b
+                                if L2(a) == L2(ksmallest(c))
+                                    smallest = false;
+                                end
+                            end
+                            if smallest
+                                ksmallest(b) = a;
+                            end
+                        end
+                    end
+                end
+bestguess = 0;
+                bestguess = ceil(ksmallest(1)/5);
+                temp = currSample;
+                if bestguess == ceil(temp/5)
+                    success = success+1;
+                end
+                disp(ksmallest);
+                currSample = currSample + 1;
+            end
+        end
+        performance(dctlength, k) = (success/2);
+    end
+end
+disp(performance(:, 1));
+dList = ctranspose(dList);
+dTotal = repmat(dList, 1, kNum);
+kTotal = repmat(kList, dctNum, 1);
+surf(dTotal, kTotal, performance);
+% 3D plot
+xlabel("DCT Length");
+ylabel("K value");
+zlabel("Success Rate");
+ylim([1 7]);
+xlim([25 100]);
+xticks(25:15:100);
+yticks(1:2:7);
+zlim([70 100]);
+zticks(70:5:100);
+title("Success Rate vs Varying K and DCT Length Values");
+%successRate = success/(sample-1);
